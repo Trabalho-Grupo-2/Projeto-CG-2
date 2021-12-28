@@ -1,5 +1,5 @@
 import * as THREE from './libs/three.module.js';
-let camera, scene, renderer, geometry, material
+let camera, scene, renderer, geometry, material, flagArrowLeft = false, flagArrowRight = false; 
 // once everything is loaded, we run our Three.js stuff
 
 window.onload = function init() {
@@ -53,18 +53,10 @@ window.onload = function init() {
                 // down arrow
                 break;
             case 'ArrowLeft':
-                function myCube() {
-                    cube.position.x -= 0.1;
-                    for (let i = 0; i < 100; i++) {
-                        setTimeout(myCube, 100);
-                    }
-                }
+                flagArrowLeft = true;
                 break;
             case 'ArrowRight':
-                setTimeout(() => {
-                    cube.position.x += 10;
-                }, 200);
-
+                flagArrowRight = true;
                 break;
         }
     };
@@ -72,10 +64,28 @@ window.onload = function init() {
 
     function render() {
         console.log(plane.position)
+
         plane.position.y--;
+
         if (plane.position.y < -2500) {
             plane.position.y = 2500
         }
+
+        if (flagArrowLeft) {
+            cube.position.x -= 0.25;
+            if (cube.position.x <= -10) {
+                flagArrowLeft = false
+            }
+        }
+        
+        
+        if (flagArrowRight) {
+            cube.position.x += 0.25;
+            if (cube.position.x >= 10) {
+                flagArrowRight = false
+            }
+        }
+
         renderer.render(scene, camera);
     };
 
