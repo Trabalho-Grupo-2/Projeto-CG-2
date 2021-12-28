@@ -13,7 +13,7 @@ window.onload = function init() {
     camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000); // perspective camera
 
     camera.position.x = camera.position.y = 0;
-    camera.position.z = 2 // place the camera using world coordinates
+    camera.position.z = 0 // place the camera using world coordinates
     camera.lookAt(scene.position); //point the camera to the center of the scene
 
     // create a renderer: if no Canvas parameter is passed, a new canvas element will be created
@@ -23,7 +23,7 @@ window.onload = function init() {
 
     renderer.setClearColor("#0000FF"); // configure clear color (background color)
 
-    let geometry = new THREE.PlaneGeometry(2, 2);
+    let geometry = new THREE.PlaneGeometry(100 , 0.1);
     let material = new THREE.MeshBasicMaterial({ color: 0xffff00, side: THREE.DoubleSide });
     const plane = new THREE.Mesh(geometry, material);
     scene.add(plane);
