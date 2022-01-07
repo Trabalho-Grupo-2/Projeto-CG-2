@@ -36,7 +36,7 @@ window.onload = function init() {
 
 
     // immediately use the texture for material creation
-    const texture = new THREE.TextureLoader().load('textures/floor.jpg.jpg');
+    const texture = new THREE.TextureLoader().load('textures/floor.jpg');
 
     geometry = new THREE.PlaneGeometry(50, 20000);
     material = new THREE.MeshBasicMaterial({ map: texture })
@@ -72,12 +72,11 @@ window.onload = function init() {
             cube.position.z += 0.2;
         if (!goingUp) {
             cube.position.z -= 0.2;
-            if(cube.position.z < 0){
+            if (cube.position.z < 0) {
                 clearInterval(jumpInterval);
             }
         }
     }
-
     function turnLeft() {
         if (cube.position.x > -10){
             cube.position.x -= 0.3
@@ -88,14 +87,13 @@ window.onload = function init() {
     }
 
     function turnRight() {
-        if (cube.position.x < 10){
+        if (cube.position.x < 10) {
             cube.position.x += 0.3
         }
-        if(cube.position.x >= 10){
-        clearInterval(rightInterval);
+        if (cube.position.x >= 10) {
+            clearInterval(rightInterval);
         }
     }
-
     function render() {
 
         cube.position.y++;
@@ -104,13 +102,13 @@ window.onload = function init() {
         if (flagArrowLeft) {
             flagArrowLeft = false;
             goingLeft = true;
-            leftInterval = setInterval(turnLeft,15);
+            leftInterval = setInterval(turnLeft, 15);
         }
 
         if (flagArrowRight) {
             flagArrowRight = false;
             goingRight = true;
-            rightInterval = setInterval(turnRight,15);
+            rightInterval = setInterval(turnRight, 15);
 
         }
         if (flagArrowUp) {
