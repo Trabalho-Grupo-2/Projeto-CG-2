@@ -1,6 +1,6 @@
 import * as THREE from './libs/three.module.js';
 let camera, scene, renderer, geometry, material, flagArrowLeft = false, flagArrowRight = false, flagArrowUp = false, jumpInterval, leftInterval, rightInterval
-let goingUp = false, goingLeft = false, goingRight = false
+let goingUp = false, goingLeft = false, goingRight = false ,isAtCenter = true;
 let cx = 0; let cy = -20; let cz = 10;
 const posY = [-10, 0, 10]
 // once everything is loaded, we run our Three.js stuff
@@ -31,7 +31,9 @@ window.onload = function init() {
     geometry = new THREE.BoxGeometry(2, 2, 2);
     material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
     const cube = new THREE.Mesh(geometry, material);
+    cube.position.x = 0;
     cube.position.y = cy + 10;
+    cube.position.z = 0;
     scene.add(cube);
 
 
@@ -78,20 +80,42 @@ window.onload = function init() {
         }
     }
     function turnLeft() {
-        if (cube.position.x > -10){
-            cube.position.x -= 0.3
+        if (cube.position.x <= -9.9 || cube.position.x >= 10){
+            isAtCenter=false;
         }
-        if(cube.position.x <= -10){
-        clearInterval(leftInterval);
+        if(isAtCenter){
+                cube.position.x -= 0.2;
+            if(cube.position.x <= -10){
+                clearInterval(leftInterval);
+            }
+        }
+        if(!isAtCenter){
+            cube.position.x -= 0.2
+            if(cube.position.x <=0){
+                console.log(isAtCenter);
+               isAtCenter = true && clearInterval(leftInterval);
+                
+            }
         }
     }
 
     function turnRight() {
-        if (cube.position.x < 10) {
-            cube.position.x += 0.3
+        if (cube.position.x <= -9.9 || cube.position.x >= 10){
+            isAtCenter=false;
+            console.log(isAtCenter)
         }
-        if (cube.position.x >= 10) {
-            clearInterval(rightInterval);
+        if(isAtCenter){
+                cube.position.x += 0.2;
+            if(cube.position.x >= 10){
+                clearInterval(rightInterval);
+            }
+        }
+        if(!isAtCenter){
+            cube.position.x += 0.2
+            if(cube.position.x <=0){
+               isAtCenter = true && clearInterval(rightInterval);
+                
+            }
         }
     }
     function render() {
@@ -102,13 +126,13 @@ window.onload = function init() {
         if (flagArrowLeft) {
             flagArrowLeft = false;
             goingLeft = true;
-            leftInterval = setInterval(turnLeft, 15);
+            leftInterval = setInterval(turnLeft, 10);
         }
 
         if (flagArrowRight) {
             flagArrowRight = false;
             goingRight = true;
-            rightInterval = setInterval(turnRight, 15);
+            rightInterval = setInterval(turnRight, 10);
 
         }
         if (flagArrowUp) {
