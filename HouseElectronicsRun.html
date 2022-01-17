@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Project 3D</title>
+    <style>
+        body {
+            /* set margin to 0 and overflow to hidden, to use the complete page */
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+
+    <script type="module">
+        import * as THREE from './libs/three.module.js';
+        // ORBIT CONTROLS utility (enable moving camera with mouse)
+        import { OrbitControls } from './libs/OrbitControls.js';
+
+        let camera, scene, renderer;
+        let flagArrowUp = false, flagArrowDown = false, flagArrowLeft = false, flagArrowRight = false, DoorClosed = true, DoorStop = false, isOnFloor = false, isUp = true
+        let front; let fridge; let plain; let fence; let structure; let fenceStructure; let ac = 0.01; let mesh; let geometry;
+        const barriers = [];
+
+        // once everything is loaded, we run our Three.js stuff
+        window.onload = function init() {
+            /*********************
+             * SCENE 
+             * *******************/
+            // create an empty scene, that will hold all our elements such as objects, cameras and lights
+            scene = new THREE.Scene();
+
+
+            /*********************
+             * CAMERA 
+             * *******************/
+            // create a camera, which defines where we're looking at
+            const aspect = window.innerWidth / window.innerHeight;
+            camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000); // perspective camera
+            camera.position.set(0, -100, 10);
+
+
+            /*********************
+             * RENDERER 
+             * *******************/
+            // create a render and set the size
+            renderer = new THREE.WebGLRenderer({ antialias: false }); // aliasing (jagged edges when rendering)
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            // configure renderer clear color
+            renderer.setClearColor(0xadd8e6);
+
+            // add the output of the renderer to an HTML element (this case, the body)
+            document.body.appendChild(renderer.domElement);
+
+
+            /*********************
+            * ORBIT CONTROLS 
+            *********************/
+            const controls = new OrbitControls(camera, renderer.domElement);
+            const axesHelper = new THREE.AxesHelper(50)
+
+
+            document.onkeydown = function (e) {
+                switch (e.key) {
+                    case 'ArrowUp':
+                        flagArrowUp = true;
+                        break;
+                    case 'ArrowDown':
+                        flagArrowDown = true;
+                        break;
+                    case 'ArrowLeft':
+                        flagArrowLeft = true;
+                        break;
+                    case 'ArrowRight':
+                        flagArrowRight = true;
+                        break;
+                }
+            };
+
+            plain = new THREE.Object3D();
+            geometry = new THREE.BoxGeometry(100, 100000, 0);
+            let material = new THREE.MeshBasicMaterial({ color: 0xeeeeee, opacity: 1 });
+            let myPlain = new THREE.Mesh(geometry, material);
+            myPlain.position.z = -11
+            scene.add(myPlain);
+
+
+            fridge = new THREE.Object3D();
+            fridge.add(axesHelper);
+            fridge.position.set(0, 0, 0)
+            scene.add(fridge);
+
+            geometry = new THREE.BoxGeometry(10, 1, 20);
+            material = new THREE.MeshBasicMaterial({ color: 0xFFFFFF, opacity: 1 });
+            let back = new THREE.Mesh(geometry, material);
+            fridge.add(back);
+
+            geometry = new THREE.BoxGeometry(1, 7, 20);
+            let s1 = new THREE.Mesh(geometry, material);
+            s1.position.x = -5;
+            s1.position.y = -3;
+            fridge.add(s1);
+
+            geometry = new THREE.BoxGeometry(1, 7, 20);
+            let s2 = new THREE.Mesh(geometry, material);
+            s2.position.x = 5;
+            s2.position.y = -3;
+            fridge.add(s2);
+
+            geometry = new THREE.BoxGeometry(10, 6.5, 1);
+            material = new THREE.MeshBasicMaterial({ color: 0xEEEEEE });
+            let shelf1 = new THREE.Mesh(geometry, material);
+            shelf1.position.x = 0;
+            shelf1.position.y = -3;
+            shelf1.position.z = 4;
+            fridge.add(shelf1);
+
+            geometry = new THREE.BoxGeometry(10, 6.5, 1);
+            let shelf2 = new THREE.Mesh(geometry, material);
+            shelf2.position.x = 0;
+            shelf2.position.y = -3;
+            shelf2.position.z = -3;
+            fridge.add(shelf2);
+
+            geometry = new THREE.BoxGeometry(11, 7, 1);
+            material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+            let top = new THREE.Mesh(geometry, material);
+            top.position.x = 0;
+            top.position.y = -3;
+            top.position.z = 10;
+            fridge.add(top);
+
+            geometry = new THREE.BoxGeometry(11, 7, 1);
+            let bottom = new THREE.Mesh(geometry, material);
+            bottom.position.x = 0;
+            bottom.position.y = -3;
+            bottom.position.z = -10;
+            fridge.add(bottom);
+
+            front = new THREE.Object3D();
+            front.position.set(5.5, -6.5, 4);
+            fridge.add(front);
+
+            geometry = new THREE.BoxGeometry(11, 1, 13);
+            let front1 = new THREE.Mesh(geometry, material);
+            front1.position.x = -5.5;
+            front1.position.y = -0.5;
+            front.add(front1);
+
+            geometry = new THREE.BoxGeometry(0.5, 1, 0.5);
+            material = new THREE.MeshBasicMaterial({ color: 0x000000 });
+            let pusherUp = new THREE.Mesh(geometry, material);
+            pusherUp.position.x = -8;
+            pusherUp.position.y = -1;
+            pusherUp.position.z = 2;
+            front.add(pusherUp);
+
+            geometry = new THREE.BoxGeometry(0.5, 1, 0.5);
+            let pusherDown = new THREE.Mesh(geometry, material);
+            pusherDown.position.x = -8;
+            pusherDown.position.y = -1;
+            pusherDown.position.z = 0;
+            front.add(pusherDown);
+
+            geometry = new THREE.BoxGeometry(0.5, 0.5, 2.5);
+            let pusherFront = new THREE.Mesh(geometry, material);
+            pusherFront.position.x = -8;
+            pusherFront.position.y = -1.5;
+            pusherFront.position.z = 1;
+            front.add(pusherFront);
+
+
+            function jump(option) {
+                if (option == 1) {
+                    flagArrowLeft = false;
+                    flagArrowRight = false;
+                    if (DoorClosed && !DoorStop) {
+                        fridge.position.z += 0.5
+                        front.rotateZ(Math.PI / 2 * ac);
+                    }
+                    else if (!DoorClosed && !DoorStop) {
+                        fridge.position.z -= 0.5
+                        front.rotateZ(-Math.PI / 2 * ac)
+                    }
+                    if (front.rotation.z >= Math.PI / 2) {
+                        DoorClosed = false
+                    }
+                    if (front.rotation.z <= 0 && !DoorStop) {
+                        DoorClosed = true;
+                        DoorStop = false;
+                        flagArrowUp = false;
+                    }
+                }
+                if (option == 2) {
+
+                    if (DoorClosed && !DoorStop) {
+                        if (fridge.position.x > -20) {
+                            fridge.position.x -= 0.2
+                            front.rotateZ(Math.PI / 2 * ac);
+                        }
+                    }
+                    else if (!DoorClosed && !DoorStop) {
+                        front.rotateZ(-Math.PI / 2 * ac)
+                    }
+                    if (front.rotation.z >= Math.PI / 2) {
+                        DoorClosed = false
+                    }
+                    if (front.rotation.z <= 0 && !DoorStop) {
+                        DoorClosed = true;
+                        DoorStop = false;
+                        flagArrowLeft = false;
+
+                    }
+                }
+                if (option == 3) {
+                    flagArrowLeft = false;
+                    flagArrowUp = false;
+                    if (DoorClosed && !DoorStop) {
+                        if (fridge.position.x < 20) {
+                            fridge.position.x += 0.2
+                            front.rotateZ(Math.PI / 2 * ac);
+                        }
+                    }
+                    else if (!DoorClosed && !DoorStop) {
+                        front.rotateZ(-Math.PI / 2 * ac)
+                    }
+                    if (front.rotation.z >= Math.PI / 2) {
+                        DoorClosed = false
+                    }
+                    if (front.rotation.z <= 0 && !DoorStop) {
+                        DoorClosed = true;
+                        DoorStop = false;
+                        flagArrowRight = false;
+                    }
+                }
+            }
+
+            function closeDoor() {
+                if (isUp && !isOnFloor) {
+                    fridge.rotateY(Math.PI / 2 * ac);
+                }
+                else if (!isUp && !isOnFloor) {
+                    fridge.rotateY(Math.PI / 2 * ac)
+                }
+
+                if (fridge.rotation.y >= Math.PI / 2.01 && !isOnFloor) {
+                    isUp = true
+                    isOnFloor = false
+                    flagArrowDown = false
+                }
+                front.rotateZ(Math.PI / 2 * ac);
+            }
+
+
+            function rollPos() {
+                let myNum = Math.random();
+                if (myNum < 1 / 3) {
+                    return -20
+                }
+                else if (myNum < 2 / 3) {
+                    return 1
+                }
+                else {
+                    return 20
+                }
+            }
+
+            structure = new THREE.Object3D();
+            scene.add(structure)
+            geometry = new THREE.BoxGeometry(20, 5, 20);
+            material = new THREE.MeshBasicMaterial({ color: 0x00FF00 });
+            for (let i = 1; i < 500; i++) {
+
+                fenceStructure = new THREE.Mesh(geometry, material);
+                fenceStructure.position.set(rollPos(), (Math.round(-100 * Math.random())) - 200 * i, -5);
+                structure.add(fenceStructure);
+            }
+
+
+            renderer.setAnimationLoop(render);
+            function render() {
+
+                if (flagArrowUp) {
+                    jump(1);
+                }
+                if (flagArrowLeft) {
+                    jump(2);
+                }
+                if (flagArrowRight) {
+                    jump(3);
+                }
+                if (flagArrowDown) {
+                    closeDoor();
+                }
+                camera.position.y -= 0.4;
+                fridge.position.y -= 0.4;
+                if (fridge.position.y < fenceStructure.position.y) {
+                }
+                renderer.render(scene, camera);
+            }
+
+        }
+
+
+
+
+    </script>
+</body>
+
+</html>
