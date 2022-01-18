@@ -23,6 +23,7 @@
         let camera, scene, renderer;
         let flagArrowUp = false, flagArrowDown = false, flagArrowLeft = false, flagArrowRight = false, DoorClosed = true, DoorStop = false, isOnFloor = false, isUp = true
         let front; let fridge; let plain; let fence; let structure; /*let fenceStructure;*/ let collision; let BBox2; let ac = 0.01; let mesh; let geometry;
+        let obj_cam_mov = 0.4;
         const barriers = [];
 
         // once everything is loaded, we run our Three.js stuff
@@ -276,12 +277,7 @@
 
                 let fenceStructure = new THREE.Mesh(geometry, material);
                 fenceStructure.position.set(rollPos(), (Math.round(-100 * Math.random())) - 200 * i, -5);
-                // structure.add(fenceStructure);
                 scene.add(fenceStructure);
-
-                //     let BBox2 = new THREE.Box3().setFromObject(fenceStructure);
-                //     BBoxsHelp.push(new THREE.BoxHelper(fenceStructure, 0x0000FF));
-                //    scene.add(BBoxsHelp[i]);
 
 
                 barriers.push(fenceStructure);
@@ -289,9 +285,6 @@
 
             console.log(barriers);
 
-            // let BBox = new THREE.Box3().setFromObject(front);
-            // let bbHelper = new THREE.BoxHelper(front, 0x00FFFF);
-            // scene.add(bbHelper);
 
 
             console.log(scene)
@@ -325,14 +318,12 @@
                 }
                 if (flagArrowDown) {
                     closeDoor();
+                    fridge.position.z += 0.1;
+                    obj_cam_mov = 0;
                 }
-                camera.position.y -= 0.4;
-                fridge.position.y -= 0.4;
+                camera.position.y -= obj_cam_mov;
+                fridge.position.y -= obj_cam_mov;
                 checkCollision();
-                // bbHelper.update();
-
-                // for (let i = 0; i < barriers.length; i++)
-                //     BBoxsHelp[i].update()
 
                 renderer.render(scene, camera);
             }
