@@ -9,12 +9,13 @@
             /* set margin to 0 and overflow to hidden, to use the complete page */
             margin: 0;
             overflow: hidden;
+
+
         }
     </style>
 </head>
 
 <body>
-
     <script type="module">
         import * as THREE from './libs/three.module.js';
         // ORBIT CONTROLS utility (enable moving camera with mouse)
@@ -24,6 +25,7 @@
         let flagArrowUp = false, flagArrowDown = false, flagArrowLeft = false, flagArrowRight = false, DoorClosed = true, DoorStop = false, isOnFloor = false, isUp = true
         let front; let fridge; let plain; let fence; let structure; /*let fenceStructure;*/ let collision; let BBox2; let ac = 0.01; let mesh; let geometry;
         let obj_cam_mov = 0.4;
+        let cilindrobotao2, cilindrobotao, linecilindrobotao2, linecilindrobotao;
         const barriers = [];
 
         // once everything is loaded, we run our Three.js stuff
@@ -33,7 +35,6 @@
              * *******************/
             // create an empty scene, that will hold all our elements such as objects, cameras and lights
             scene = new THREE.Scene();
-
 
             /*********************
              * CAMERA 
@@ -64,6 +65,51 @@
             const axesHelper = new THREE.AxesHelper(50)
 
 
+            function changeCharacter(character) {
+                switch (character) {
+                    case "1":
+                        fridge.visible = true;
+                        microwave.visible = false;
+                        tv.visible = false;
+                        break;
+
+                    case "2":              
+                        fridge.visible = false;
+                        microwave.visible = true;
+                        tv.visible = false;
+                        break;
+
+                    case "3":
+                        fridge.visible = false;
+                        microwave.visible = false;
+                        tv.visible = true;
+                        break;
+                }
+            }
+
+            function createBoxWithRoundedEdges(width, height, depth, radius0, smoothness ) {
+            let shape = new THREE.Shape();
+            let eps = 0.00001;
+            let radius = radius0 - eps;
+            shape.absarc( eps, eps, eps, -Math.PI / 2, -Math.PI, true );
+            shape.absarc( eps, height -  radius * 2, eps, Math.PI, Math.PI / 2, true );
+            shape.absarc( width - radius * 2, height -  radius * 2, eps, Math.PI / 2, 0, true );
+            shape.absarc( width - radius * 2, eps, eps, 0, -Math.PI / 2, true );
+            let geometry = new THREE.ExtrudeBufferGeometry( shape, {
+            amount: depth - radius0 * 2,
+            bevelEnabled: true,
+            bevelSegments: smoothness * 2,
+            steps: 1,
+            bevelSize: radius,
+            bevelThickness: radius0,
+            curveSegments: smoothness
+            });
+
+            geometry.center();
+
+            return geometry;
+            }
+
             document.onkeydown = function (e) {
                 switch (e.key) {
                     case 'ArrowUp':
@@ -75,8 +121,783 @@
                     case 'ArrowRight':
                         flagArrowRight = true;
                         break;
+                    case '1':
+                        changeCharacter(e.key)
+                        break;
+                    case '2':
+                        changeCharacter(e.key)
+                        break;
+                    case '3':
+                        changeCharacter(e.key)
+                        break;
                 }
             };
+
+            //
+            // Microwave
+            //
+            
+            let microwave = new THREE.Group();
+
+            // White Wall 01
+            const whiteWall01 = new THREE.Mesh(
+                new THREE.BoxGeometry(3.25, 2, 0.1),
+                new THREE.MeshBasicMaterial({color: "#EFEFEF"}));
+
+            whiteWall01.position.x = 0
+            whiteWall01.position.z = -0.95
+
+            microwave.add(whiteWall01);
+
+            // White Wall 03            
+             const whiteWall03 = new THREE.Mesh(
+                new THREE.BoxGeometry(0.1, 2, 2),
+                new THREE.MeshBasicMaterial({color: "#EFEFEF"}));
+
+            whiteWall03.position.x = -1.6
+            whiteWall03.position.z = 0
+
+            microwave.add(whiteWall03);
+
+            // White Wall 04            
+            const whiteWall04 = new THREE.Mesh(
+                new THREE.BoxGeometry(0.1, 2, 2),
+                new THREE.MeshBasicMaterial({color: "#EFEFEF"}));
+
+            whiteWall04.position.x = 1.65
+            whiteWall04.position.z = 0
+
+            microwave.add(whiteWall04);
+
+
+            // White Wall 05            
+            const whiteWall05 = new THREE.Mesh(
+                new THREE.BoxGeometry(3.25, 2, 0.1),
+                new THREE.MeshBasicMaterial({color: "#EFEFEF"}));
+
+            whiteWall05.position.y = 0.95
+ 
+            whiteWall05.rotation.x = Math.PI / 2
+
+            microwave.add(whiteWall05);
+
+            // White Wall 06          
+             const whiteWall06 = new THREE.Mesh(
+                new THREE.BoxGeometry(3.25, 2, 0.1),
+                new THREE.MeshBasicMaterial({color: "#EFEFEF"}));
+
+            whiteWall06.position.y = -0.95
+ 
+            whiteWall06.rotation.x = Math.PI / 2
+
+            microwave.add(whiteWall06);
+
+            // White Wall 07          
+             const whiteWall07 = new THREE.Mesh(
+                new THREE.BoxGeometry(1.15, 2, 0.1),
+                new THREE.MeshBasicMaterial({color: "#EFEFEF"}));
+
+            whiteWall07.position.x = 1.11
+            whiteWall07.position.z = 0.95
+
+            microwave.add(whiteWall07);
+
+            // White Wall 08          
+            const whiteWall08 = new THREE.Mesh(
+                new THREE.BoxGeometry(0.42, 2, 0.1),
+                new THREE.MeshBasicMaterial({color: "#EFEFEF"}));
+
+            whiteWall08.position.x = - 1.44
+            whiteWall08.position.z = 0.95
+
+            microwave.add(whiteWall08);
+
+            // White Wall 09          
+            const whiteWall09 = new THREE.Mesh(
+                new THREE.BoxGeometry(2, 0.37, 0.1),
+                new THREE.MeshBasicMaterial({color: "#EFEFEF"}));
+
+            whiteWall09.position.x = -0.3
+            whiteWall09.position.y = 0.815
+            whiteWall09.position.z = 0.95
+
+            microwave.add(whiteWall09);
+            
+            // White Wall 10          
+            const whiteWall10 = new THREE.Mesh(
+                new THREE.BoxGeometry(2, 0.37, 0.1),
+                new THREE.MeshBasicMaterial({color: "#EFEFEF"}));
+
+            whiteWall10.position.x = -0.3
+            whiteWall10.position.y = -0.815
+            whiteWall10.position.z = 0.95
+
+            microwave.add(whiteWall10);
+
+            ////////////////////////////////
+
+            // Black Screen 01
+            const blackScreen01 = new THREE.Mesh(
+                new THREE.BoxGeometry(0.24, 1.29, 0.05), 
+                new THREE.MeshBasicMaterial({color: "#0c0c0c"}));
+
+            blackScreen01.position.x = -1.34;
+            blackScreen01.position.z = 1.02;
+            
+            microwave.add(blackScreen01);
+
+            // Black Screen 02
+            const blackScreen02 = new THREE.Mesh(
+                new THREE.BoxGeometry(0.24, 1.29, 0.05), 
+                new THREE.MeshBasicMaterial({color: "#0c0c0c"}));
+
+            blackScreen02.position.x = 0.64;
+            blackScreen02.position.z = 1.02;
+            
+            microwave.add(blackScreen02);
+
+            // Black Screen 03
+            const blackScreen03 = new THREE.Mesh(
+                new THREE.BoxGeometry(2.22, 0.24, 0.05), 
+                new THREE.MeshBasicMaterial({color: "#0c0c0c"}));
+
+                
+            blackScreen03.position.x = -0.35;
+            blackScreen03.position.y = 0.74
+            blackScreen03.position.z = 1.02;
+            
+            microwave.add(blackScreen03);
+
+            // Black Screen 04
+            const blackScreen04 = new THREE.Mesh(
+                new THREE.BoxGeometry(2.22, 0.24, 0.05), 
+                new THREE.MeshBasicMaterial({color: "#0c0c0c"}));
+
+                
+            blackScreen04.position.x = -0.35;
+            blackScreen04.position.y = -0.74
+            blackScreen04.position.z = 1.02;
+            
+            microwave.add(blackScreen04);
+
+            ////////////////////////////////
+
+            // Gray Screen
+            const grayScreen = new THREE.Mesh(
+                new createBoxWithRoundedEdges(1.75, 1.25, 0.05, 0.02, 3), 
+                new THREE.MeshBasicMaterial({color: "#5a5a5a"}));
+
+            grayScreen.position.x = -0.35;
+            grayScreen.position.z = 1.06;
+            
+            microwave.add(grayScreen);
+
+            ////////////////////////////////
+
+            // Spinning Dish
+
+            const spiningDish = new THREE.Mesh(
+                new THREE.CylinderGeometry(0.7, 0.7, 0.1, 6),
+                new THREE.MeshBasicMaterial({color: "#535353"}));
+            
+            spiningDish.position.x = -0.35;
+            spiningDish.position.y = -0.6;
+
+            microwave.add(spiningDish);
+
+            // Time Counter
+            const counter = new THREE.Mesh(
+                new createBoxWithRoundedEdges(0.57, 0.23, 0.05, 0.02, 3), 
+                new THREE.MeshBasicMaterial({color: "#0c0c0c"}));
+
+            counter.position.x = 1.2;
+            counter.position.y = 0.6;
+            counter.position.z = 1.02;
+            
+            microwave.add(counter);
+
+            // Pontos
+            const ponto01 = new THREE.Mesh(
+                new THREE.BoxGeometry(0.025, 0.025, 0.05), 
+                new THREE.MeshBasicMaterial({color: "#cc0000"}));
+
+            ponto01.position.x = 1.20;
+            ponto01.position.y = 0.63;
+            ponto01.position.z = 1.03;
+            
+            microwave.add(ponto01);
+
+            const ponto02 = new THREE.Mesh(
+                new THREE.BoxGeometry(0.025, 0.025, 0.05), 
+                new THREE.MeshBasicMaterial({color: "#cc0000"}));
+
+            ponto02.position.x = 1.20;
+            ponto02.position.y = 0.57;
+            ponto02.position.z = 1.03;
+            
+            microwave.add(ponto02);
+
+            // Digit 01
+            const digit01 = new THREE.Mesh(
+                new THREE.BoxGeometry(0.01, 0.12, 0.05), 
+                new THREE.MeshBasicMaterial({color: "#cc0000"}));
+
+            digit01.position.x = 0.96;
+            digit01.position.y = 0.6;
+            digit01.position.z = 1.03;
+            
+            microwave.add(digit01);
+
+            // Digit 02
+            const digit02 = new THREE.Mesh(
+                new THREE.BoxGeometry(0.01, 0.12, 0.05), 
+                new THREE.MeshBasicMaterial({color: "#cc0000"}));
+
+            digit02.position.x = 1.04;
+            digit02.position.y = 0.6;
+            digit02.position.z = 1.03;
+            
+            microwave.add(digit02);
+
+            // Digit 03
+            const digit03 = new THREE.Mesh(
+                new THREE.BoxGeometry(0.06, 0.01, 0.05), 
+                new THREE.MeshBasicMaterial({color: "#cc0000"}));
+
+            digit03.position.x = 1.00;
+            digit03.position.y = 0.67;
+            digit03.position.z = 1.03;
+            
+            microwave.add(digit03);
+
+            // Digit 04
+            const digit04 = new THREE.Mesh(
+                new THREE.BoxGeometry(0.06, 0.01, 0.05), 
+                new THREE.MeshBasicMaterial({color: "#cc0000"}));
+
+            digit04.position.x = 1.00;
+            digit04.position.y = 0.53;
+            digit04.position.z = 1.03;
+            
+            microwave.add(digit04);
+
+            // Digit 05
+            const digit05 = new THREE.Mesh(
+                new THREE.BoxGeometry(0.01, 0.12, 0.05), 
+                new THREE.MeshBasicMaterial({color: "#cc0000"}));
+
+            digit05.position.x = 1.07;
+            digit05.position.y = 0.6;
+            digit05.position.z = 1.03;
+            
+            microwave.add(digit05);
+
+            // Digit 06
+            const digit06 = new THREE.Mesh(
+                new THREE.BoxGeometry(0.01, 0.12, 0.05), 
+                new THREE.MeshBasicMaterial({color: "#cc0000"}));
+
+            digit06.position.x = 1.15;
+            digit06.position.y = 0.6;
+            digit06.position.z = 1.03;
+            
+            microwave.add(digit06);
+
+            // Digit 07
+            const digit07 = new THREE.Mesh(
+                new THREE.BoxGeometry(0.06, 0.01, 0.05), 
+                new THREE.MeshBasicMaterial({color: "#cc0000"}));
+
+            digit07.position.x = 1.11;
+            digit07.position.y = 0.67;
+            digit07.position.z = 1.03;
+            
+            microwave.add(digit07);
+
+            // Digit 08
+            const digit08 = new THREE.Mesh(
+                new THREE.BoxGeometry(0.06, 0.01, 0.05), 
+                new THREE.MeshBasicMaterial({color: "#cc0000"}));
+
+            digit08.position.x = 1.11;
+            digit08.position.y = 0.53;
+            digit08.position.z = 1.03;
+            
+            microwave.add(digit08);
+
+            // Digit 09
+            const digit09 = new THREE.Mesh(
+                new THREE.BoxGeometry(0.01, 0.12, 0.05), 
+                new THREE.MeshBasicMaterial({color: "#cc0000"}));
+
+            digit09.position.x = 1.25;
+            digit09.position.y = 0.6;
+            digit09.position.z = 1.03;
+            
+            microwave.add(digit09);
+
+            // Digit 10
+            const digit10 = new THREE.Mesh(
+                new THREE.BoxGeometry(0.01, 0.12, 0.05), 
+                new THREE.MeshBasicMaterial({color: "#cc0000"}));
+
+            digit10.position.x = 1.33;
+            digit10.position.y = 0.6;
+            digit10.position.z = 1.03;
+            
+            microwave.add(digit10);
+
+            // Digit 11
+            const digit11 = new THREE.Mesh(
+                new THREE.BoxGeometry(0.06, 0.01, 0.05), 
+                new THREE.MeshBasicMaterial({color: "#cc0000"}));
+
+            digit11.position.x = 1.29;
+            digit11.position.y = 0.67;
+            digit11.position.z = 1.03;
+            
+            microwave.add(digit11);
+
+            // Digit 12
+            const digit12 = new THREE.Mesh(
+                new THREE.BoxGeometry(0.06, 0.01, 0.05), 
+                new THREE.MeshBasicMaterial({color: "#cc0000"}));
+
+            digit12.position.x = 1.29;
+            digit12.position.y = 0.53;
+            digit12.position.z = 1.03;
+            
+            microwave.add(digit12);
+
+            // Digit 13
+            const digit13 = new THREE.Mesh(
+                new THREE.BoxGeometry(0.01, 0.12, 0.05), 
+                new THREE.MeshBasicMaterial({color: "#cc0000"}));
+
+            digit13.position.x = 1.36;
+            digit13.position.y = 0.6;
+            digit13.position.z = 1.03;
+            
+            microwave.add(digit13);
+
+            // Digit 14
+            const digit14 = new THREE.Mesh(
+                new THREE.BoxGeometry(0.01, 0.12, 0.05), 
+                new THREE.MeshBasicMaterial({color: "#cc0000"}));
+
+            digit14.position.x = 1.44;
+            digit14.position.y = 0.6;
+            digit14.position.z = 1.03;
+            
+            microwave.add(digit14);
+
+            // Digit 15
+            const digit15 = new THREE.Mesh(
+                new THREE.BoxGeometry(0.06, 0.01, 0.05), 
+                new THREE.MeshBasicMaterial({color: "#cc0000"}));
+
+            digit15.position.x = 1.40;
+            digit15.position.y = 0.67;
+            digit15.position.z = 1.03;
+            
+            microwave.add(digit15);
+
+            // Digit 16
+            const digit16 = new THREE.Mesh(
+                new THREE.BoxGeometry(0.06, 0.01, 0.05), 
+                new THREE.MeshBasicMaterial({color: "#cc0000"}));
+
+            digit16.position.x = 1.40;
+            digit16.position.y = 0.53;
+            digit16.position.z = 1.03;
+            
+            microwave.add(digit16);
+
+
+
+            ////////////////////////////////
+
+            // Wheel
+            const wheel = new THREE.Mesh(
+                new THREE.CylinderGeometry(0.18, 0.18, 0.1, 20), 
+                new THREE.MeshBasicMaterial({color: "#959595"}));
+
+            wheel.position.x = 1.2;
+            wheel.position.y = -0.36;
+            wheel.position.z = 1.05;
+
+            wheel.rotation.x = Math.PI / 2;
+            
+            microwave.add(wheel);
+
+            ////////////////////////////////
+
+            // Button 1
+            const button1 = new THREE.Mesh(
+                new createBoxWithRoundedEdges(0.2, 0.1, 0.05, 0.02, 3), 
+                new THREE.MeshBasicMaterial({color: "#535353"}));
+
+            button1.position.x = 1.07;
+            button1.position.y = 0.3;
+            button1.position.z = 1.02;
+            
+            microwave.add(button1);
+
+            // Button 2
+            const button2 = new THREE.Mesh(
+                new createBoxWithRoundedEdges(0.2, 0.1, 0.05, 0.02, 3), 
+                new THREE.MeshBasicMaterial({color: "#535353"}));
+
+            button2.position.x = 1.34;
+            button2.position.y = 0.3;
+            button2.position.z = 1.02;
+            
+            microwave.add(button2);
+
+            // Button 3
+            const button3 = new THREE.Mesh(
+                new createBoxWithRoundedEdges(0.2, 0.1, 0.05, 0.02, 3), 
+                new THREE.MeshBasicMaterial({color: "#535353"}));
+
+            button3.position.x = 1.07;
+            button3.position.y = 0.15;
+            button3.position.z = 1.02;
+            
+            microwave.add(button3);
+
+            // Button 4
+            const button4 = new THREE.Mesh(
+                new createBoxWithRoundedEdges(0.2, 0.1, 0.05, 0.02, 3), 
+                new THREE.MeshBasicMaterial({color: "#535353"}));
+
+            button4.position.x = 1.34;
+            button4.position.y = 0.15;
+            button4.position.z = 1.02;
+            
+            microwave.add(button4);
+
+            // Button 5
+            const button5 = new THREE.Mesh(
+                new createBoxWithRoundedEdges(0.2, 0.1, 0.05, 0.02, 3), 
+                new THREE.MeshBasicMaterial({color: "#535353"}));
+
+            button5.position.x = 1.07;
+            button5.position.y = 0;
+            button5.position.z = 1.02;
+            
+            microwave.add(button5);
+
+            // Button 6
+            const button6 = new THREE.Mesh(
+                new createBoxWithRoundedEdges(0.2, 0.1, 0.05, 0.02, 3), 
+                new THREE.MeshBasicMaterial({color: "#535353"}));
+
+            button6.position.x = 1.34;
+            button6.position.y = 0;
+            button6.position.z = 1.02;
+            
+            microwave.add(button6);
+
+            microwave.rotation.x = Math.PI/2
+
+            scene.add(microwave);
+
+            // 
+            // TV
+            //
+
+            const tv = new THREE.Group();
+            front= new THREE.Mesh(
+                new THREE.BoxGeometry( 5, 3, 2), 
+                new THREE.MeshBasicMaterial({color: "#7C756F"}));
+
+                front.position.z = 2;
+
+            tv.add(front);
+
+            const whiteBox = new THREE.Mesh(
+                new THREE.CylinderGeometry( 1.3, 2, 2, 4 ), 
+                new THREE.MeshBasicMaterial({color: "#7C756F"}));
+
+                whiteBox.rotation.x = -Math.PI*(1/2);
+                whiteBox.rotation.y = Math.PI*(1/4);
+                whiteBox.position.z = 1;
+
+            tv.add(whiteBox);
+
+            const perna1= new THREE.Mesh(
+                new THREE.CylinderGeometry(0.1,0.1,2,32),
+                new THREE.MeshBasicMaterial({color:"#79726C"}));
+
+                perna1.position.z = 2.4;
+                perna1.position.x=1;
+                perna1.position.y = -1.3;
+                perna1.rotation.z = Math.PI*(1/6);
+
+            tv.add(perna1);
+            const perna2= new THREE.Mesh(
+                new THREE.CylinderGeometry(0.1,0.1,2,32),
+                new THREE.MeshBasicMaterial({color:"#79726C"}));
+
+                perna2.position.z = 2.4;
+                perna2.position.x=-1;
+                perna2.position.y = -1.3;
+                perna2.rotation.z = (-1)*Math.PI*(1/6);
+
+            tv.add(perna2);
+            const perna3= new THREE.Mesh(
+                new THREE.CylinderGeometry(0.1,0.1,2,32),
+                new THREE.MeshBasicMaterial({color:"#79726C"}));
+
+                perna3.position.z = 1.5;
+                perna3.position.x=-1;
+                perna3.position.y = -1.3;
+                perna3.rotation.z = (-1)*Math.PI*(1/6);
+
+            tv.add(perna3);
+            const perna4= new THREE.Mesh(
+                new THREE.CylinderGeometry(0.1,0.1,2,32),
+                new THREE.MeshBasicMaterial({color:"#79726C"}));
+
+                perna4.position.z = 1.5;
+                perna4.position.x=1;
+                perna4.position.y = -1.3;
+                perna4.rotation.z = Math.PI*(1/6);
+
+            tv.add(perna4);
+
+            const ecra = new THREE.Mesh(
+                new THREE.BoxGeometry(3,2,0.01),
+                new THREE.MeshBasicMaterial({color:"#000000"})
+            );
+            ecra.position.z = 3.05;
+            ecra.position.x = -0.5;
+
+
+            tv.add(ecra);
+
+            const foraEcra = new THREE.Mesh(
+                new THREE.BoxGeometry(3.5,2.5,0.01),
+                new THREE.MeshBasicMaterial({color:"#928A7A"})
+            );
+            foraEcra.position.z = 3;
+            foraEcra.position.x = -0.5;
+
+
+            tv.add(foraEcra);
+
+            const antena1= new THREE.Mesh(
+                new THREE.CylinderGeometry(0.01,0.01,2.5,32),
+                new THREE.MeshBasicMaterial({color:"#919191"}));
+
+                antena1.position.z = 1.5;
+                antena1.position.y = 2;
+                antena1.rotation.z = Math.PI*(1/6);
+
+            tv.add(antena1);
+            const antena2= new THREE.Mesh(
+                new THREE.CylinderGeometry(0.01,0.01,3,32),
+                new THREE.MeshBasicMaterial({color:"#919191"}));
+
+                antena2.position.z = 1.5;
+                antena2.position.y = 2;
+                antena2.position.x = 1;
+                antena2.rotation.z = -Math.PI*(1/6);
+
+            tv.add(antena2);
+
+            const pontaAntena1 = new THREE.Mesh(
+                new THREE.SphereGeometry(0.04,32,16),
+                new THREE.MeshBasicMaterial({color:"#919191"})
+            );
+
+            pontaAntena1.position.z= 1.5;
+            pontaAntena1.position.x = 1.75;
+            pontaAntena1.position.y = 3.3;
+
+            tv.add(pontaAntena1);
+
+            const pontaAntena2 = new THREE.Mesh(
+                new THREE.SphereGeometry(0.04,32,16),
+                new THREE.MeshBasicMaterial({color:"#919191"})
+            );
+
+            pontaAntena2.position.z= 1.5;
+            pontaAntena2.position.x = -0.6;
+            pontaAntena2.position.y = 3.05;
+
+            tv.add(pontaAntena2);
+
+            const botao= new THREE.Mesh(
+                new THREE.CylinderGeometry(0.25,0.25,0.5,32),
+                new THREE.MeshBasicMaterial({color:"#928A7A"}));
+
+                botao.position.z = 2.9;
+                botao.position.y = 0.75;
+                botao.position.x = 1.75;
+                botao.rotation.x = -Math.PI*(1/2);
+
+            tv.add(botao);
+
+            const botao2= new THREE.Mesh(
+                new THREE.CylinderGeometry(0.25,0.25,0.5,32),
+                new THREE.MeshBasicMaterial({color:"#928A7A"}));
+
+                botao2.position.z = 2.9;
+                botao2.position.x = 1.75;
+                botao2.position.y = 0.1
+                botao2.rotation.x = -Math.PI*(1/2);
+
+            tv.add(botao2);
+
+            const dentrobotao= new THREE.Mesh(
+                new THREE.CylinderGeometry(0.1,0.1,0.5,32),
+                new THREE.MeshBasicMaterial({color:"#000000"}));
+
+                dentrobotao.position.z = 2.925;
+                dentrobotao.position.y = 0.75;
+                dentrobotao.position.x = 1.75;
+                dentrobotao.rotation.x = -Math.PI*(1/2);
+
+            tv.add(dentrobotao);
+
+            const dentrobotao2= new THREE.Mesh(
+                new THREE.CylinderGeometry(0.1,0.1,0.5,32),
+                new THREE.MeshBasicMaterial({color:"#000000"}));
+
+                dentrobotao2.position.z = 2.925;
+                dentrobotao2.position.x = 1.75;
+                dentrobotao2.position.y = 0.1
+                dentrobotao2.rotation.x = -Math.PI*(1/2);
+
+            tv.add(dentrobotao2);
+
+            cilindrobotao= new THREE.Mesh(
+                new THREE.CylinderGeometry(0.05,0.05,0.4,32),
+                new THREE.MeshBasicMaterial({color:"#928A7A"}));
+
+                cilindrobotao.position.z = 3.2;
+                cilindrobotao.position.y= 0.75;
+                cilindrobotao.position.x = 1.75;
+                cilindrobotao.rotation.z = -Math.PI*(1/4);
+
+            tv.add(cilindrobotao);
+            linecilindrobotao= new THREE.LineSegments(
+                new THREE.EdgesGeometry(new THREE.CylinderGeometry(0.05,0.05,0.4,4)),
+                new THREE.LineBasicMaterial({color:"#000000"}));
+
+                linecilindrobotao.position.z = 3.2;
+                linecilindrobotao.position.y= 0.75;
+                linecilindrobotao.position.x = 1.75;
+                linecilindrobotao.rotation.z = -Math.PI*(1/4);
+
+            tv.add(linecilindrobotao);
+            cilindrobotao2= new THREE.Mesh(
+                new THREE.CylinderGeometry(0.05,0.05,0.4,32),
+                new THREE.MeshBasicMaterial({color:"#928A7A"}));
+
+                cilindrobotao2.position.z = 3.2;
+                cilindrobotao2.position.y= 0.1;
+                cilindrobotao2.position.x = 1.75;
+                cilindrobotao2.rotation.z = -Math.PI*(1/2);
+
+            tv.add(cilindrobotao2);
+            linecilindrobotao2= new THREE.LineSegments(
+                new THREE.EdgesGeometry(new THREE.CylinderGeometry(0.05,0.05,0.4,4)),
+                new THREE.LineBasicMaterial({color:"#000000"}));
+
+                linecilindrobotao2.position.z = 3.2;
+                linecilindrobotao2.position.y= 0.1;
+                linecilindrobotao2.position.x = 1.75;
+                linecilindrobotao2.rotation.z = -Math.PI*(1/2);
+
+            tv.add(linecilindrobotao2);
+
+
+            const baixoBotao= new THREE.Mesh(
+                new THREE.BoxGeometry( 0.5, 0.08, 0.01), 
+                new THREE.MeshBasicMaterial({color: "#000000"}));
+
+                baixoBotao.position.z = 3;
+                baixoBotao.position.x = 1.775;
+                baixoBotao.position.y = -0.5;
+
+            tv.add(baixoBotao);
+
+            const baixoBotao2= new THREE.Mesh(
+                new THREE.BoxGeometry( 0.5, 0.07, 0.01), 
+                new THREE.MeshBasicMaterial({color: "#000000"}));
+
+                baixoBotao2.position.z = 3;
+                baixoBotao2.position.x = 1.775;
+                baixoBotao2.position.y = -0.5;
+
+            tv.add(baixoBotao2);
+            const baixoBotao3= new THREE.Mesh(
+                new THREE.BoxGeometry( 0.5, 0.07, 0.01), 
+                new THREE.MeshBasicMaterial({color: "#000000"}));
+
+                baixoBotao3.position.z = 3;
+                baixoBotao3.position.x = 1.775;
+                baixoBotao3.position.y = -0.6;
+
+            tv.add(baixoBotao3);
+            const baixoBotao4= new THREE.Mesh(
+                new THREE.BoxGeometry( 0.5, 0.07, 0.01), 
+                new THREE.MeshBasicMaterial({color: "#000000"}));
+
+                baixoBotao4.position.z = 3;
+                baixoBotao4.position.x = 1.775;
+                baixoBotao4.position.y = -0.7;
+
+            tv.add(baixoBotao4);
+            const baixoBotao5= new THREE.Mesh(
+                new THREE.BoxGeometry( 0.5, 0.07, 0.01), 
+                new THREE.MeshBasicMaterial({color: "#000000"}));
+
+                baixoBotao5.position.z = 3;
+                baixoBotao5.position.x = 1.775;
+                baixoBotao5.position.y = -0.8;
+
+            tv.add(baixoBotao5);
+            const baixoBotao6= new THREE.Mesh(
+                new THREE.BoxGeometry( 0.5, 0.07, 0.01), 
+                new THREE.MeshBasicMaterial({color: "#000000"}));
+
+                baixoBotao6.position.z = 3;
+                baixoBotao6.position.x = 1.775;
+                baixoBotao6.position.y = -0.9;
+
+            tv.add(baixoBotao6);
+            const baixoBotao7= new THREE.Mesh(
+                new THREE.BoxGeometry( 0.5, 0.07, 0.01), 
+                new THREE.MeshBasicMaterial({color: "#000000"}));
+
+                baixoBotao7.position.z = 3;
+                baixoBotao7.position.x = 1.775;
+                baixoBotao7.position.y = -1;
+
+            tv.add(baixoBotao7);
+            const baixoBotao8= new THREE.Mesh(
+                new THREE.BoxGeometry( 0.5, 0.07, 0.01), 
+                new THREE.MeshBasicMaterial({color: "#000000"}));
+
+                baixoBotao8.position.z = 3;
+                baixoBotao8.position.x = 1.775;
+                baixoBotao8.position.y = -1.1;
+
+            tv.add(baixoBotao8);
+
+            let axes = new THREE.AxesHelper(4);
+            scene.add(axes);
+
+            tv.rotation.x = Math.PI/2
+
+            scene.add(tv);
+
+            //
+            // Fridge
+            //
 
             plain = new THREE.Object3D();
             geometry = new THREE.BoxGeometry(100, 100000, 0);
@@ -251,7 +1072,6 @@
                 front.rotateZ(Math.PI / 2 * ac);
             }
 
-
             function rollPos() {
                 let myNum = Math.random();
                 if (myNum < 1 / 3) {
@@ -283,11 +1103,6 @@
                 barriers.push(fenceStructure);
             }
 
-            console.log(barriers);
-
-
-
-            console.log(scene)
 
             function checkCollision() {
 
@@ -305,7 +1120,22 @@
             }
 
             renderer.setAnimationLoop(render);
+
+            microwave.visible = false;
+            fridge.visible = false;
+            tv.visible = false;
+
+            microwave.scale.set(9,9,9)
+            tv.position.z = 4
+
+            tv.scale.set(6,6,6)
+            tv.position.z = 6
+
+            fridge.position.z = 10
+            fridge.scale.set(1.5,1.5,1.5)
+
             function render() {
+
 
                 if (flagArrowUp) {
                     jump(1);
@@ -323,14 +1153,14 @@
                 }
                 camera.position.y -= obj_cam_mov;
                 fridge.position.y -= obj_cam_mov;
+                microwave.position.y -= obj_cam_mov;
+                tv.position.y -= obj_cam_mov;
                 checkCollision();
 
                 renderer.render(scene, camera);
             }
 
         }
-
-
 
 
     </script>
