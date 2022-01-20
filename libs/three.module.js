@@ -34061,7 +34061,6 @@ class ExtrudeGeometry extends BufferGeometry {
 
 			if ( options.amount !== undefined ) {
 
-				console.warn( 'THREE.ExtrudeBufferGeometry: amount has been renamed to depth.' );
 				depth = options.amount;
 
 			}
