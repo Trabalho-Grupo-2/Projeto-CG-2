@@ -23,6 +23,7 @@
 
         let camera, scene, renderer, material, geometry, mesh;
         let flagArrowUp = false, flagArrowDown = false, flagArrowLeft = false, flagArrowRight = false, flagMoving = false;
+        let disabledLeft = false, disabledRight = false, disabledUp = false, disabledDown = false;
         let DoorClosed = true, DoorStop = false, isOnFloor = false, isUp = true, flagStop = false;
         let front, fridge, plain, fence, structure, collision, BBox2, ac = 0.02, cilindrobotao2, cilindrobotao;
         let obj_cam_mov = 0.4;
@@ -1152,11 +1153,9 @@
                 //Fridge Animation
                 if (DoorClosed && !DoorStop) {
                     front.rotateZ(Math.PI / 2 * ac);
-                    console.log((Math.PI / 2 * ac))
                 }
                 else if (!DoorClosed && !DoorStop) {
                     front.rotateZ(-Math.PI / 2 * ac)
-                    console.log((-Math.PI / 2 * ac))
                 }
                     if (front.rotation.z >= Math.PI / 2) {
                         DoorClosed = false
