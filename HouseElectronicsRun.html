@@ -41,8 +41,9 @@
         let camera, scene, renderer, material, geometry, mesh;
         let flagArrowUp = false, flagArrowDown = false, flagArrowLeft = false, flagArrowRight = false, flagMoving = false;
         let disabledLeft = false, disabledRight = false, disabledUp = false, disabledDown = false;
-        let DoorClosed = true, DoorStop = false, isOnFloor = false, isUp = true, flagStop = false, fridgeSideControl = false;
-        let front, fridge, plain, fence, structure, collision, BBox2, ac = 0.0215, cilindrobotao2, cilindrobotao;
+        let DoorClosed = true, DoorStop = false, isOnFloor = false, isUp = true, flagStop = false, fridgeSideControl = false, hasCollided = false;
+        let front, fridge, plain, fence, structure, collision, BBox2, ac = 0.00865, cilindrobotao2, cilindrobotao;
+        let fridgerotac = 0.1, tvrotac = 0.1, microrortac = 0.1
         let obj_cam_mov = 0.4;
         const barriers = [], barra = [];
         let tv = new THREE.Group();
@@ -1016,7 +1017,7 @@
                         microwave.position.z += 0.5
                         tv.position.z += 0.5
 
-                        if (fridge.position.z >= 36 || microwave.position.z >= 36 || tv.position.z >= 36) {
+                        if (fridge.position.z >= 70 || microwave.position.z >= 70 || tv.position.z >= 70) {
                             flagArrowUp = false;
                             flagArrowDown = true;
                             disabledUp = true;
@@ -1121,14 +1122,14 @@
             structure = new THREE.Object3D();
             scene.add(structure)
 
-            geometry = new THREE.BoxGeometry(20, 5, 20);
+            geometry = new THREE.BoxGeometry(35, 5, 20);
             material = new THREE.MeshBasicMaterial({ color: 0x0000FF });
 
             let BBoxsHelp = []
             for (let i = 0; i < 100; i++) {
 
                 let fenceStructure = new THREE.Mesh(geometry, material);
-                fenceStructure.position.set(rollPos(), (Math.round(-100 * Math.random())) - 200 * i, -5);
+                fenceStructure.position.set(rollPos(), (Math.round(-200 * Math.random())) - 200 * i, -5);
                 scene.add(fenceStructure);
 
                 barriers.push(fenceStructure);
@@ -1149,6 +1150,7 @@
                     let colision3 = BBox3.intersectsBox(BBox0)
                     if (colision1 || colision2 || colision3) {
                         flagArrowDown = true;
+                        hasCollided = true;
                     }
                 };
             }
@@ -1176,7 +1178,12 @@
 
                 //Fridge Animation
                 if (fridgeSideControl) {
-                    if (DoorClosed && !DoorStop) {
+                    fridgeAnimate();
+                }
+            }
+
+            function fridgeAnimate() {
+                if (DoorClosed && !DoorStop) {
                         front.rotateZ(Math.PI / 2 * ac);
                     }
                     else if (!DoorClosed && !DoorStop) {
@@ -1189,9 +1196,7 @@
                         DoorClosed = true;
                         DoorStop = false;
                     }
-                }
             }
-
             function stopObject() {
                 for (let i = 0; i < 3; i++) {
                     barra[i].visible = false;
@@ -1204,10 +1209,21 @@
             callTv()
             callFridge()
 
+            function collisonResponse(){
+                fridge.position.z+= 1;
+                fridge.position.y-= 1;
+                fridge.rotateY(Math.PI / 2.29 * fridgerotac)
+                tv.position.z+=1;
+                tv.rotateY(Math.PI / 2 * tvrotac);
+                microwave.position.z+=1;
+                microwave.position.y+= 1;
+                microwave.rotateY(Math.PI / 2 * microrortac)
+                
+            }
+
             microwave.visible = false;
             fridge.visible = false;
             tv.visible = false;
-
             microwave.scale.set(9, 9, 9)
             microwave.position.z = 8
 
@@ -1240,10 +1256,16 @@
                     moveObject(4);
                     animateObject();
                 }
-                //camera.position.y -= obj_cam_mov;
-                //fridge.position.y -= obj_cam_mov;
-                //microwave.position.y -= obj_cam_mov;
-                //tv.position.y -= obj_cam_mov;
+                
+                if(hasCollided == false){
+                camera.position.y -= obj_cam_mov;
+                fridge.position.y -= obj_cam_mov;
+                microwave.position.y -= obj_cam_mov;
+                tv.position.y -= obj_cam_mov;
+                }
+                else{
+                    collisonResponse();
+                }
                 checkCollision();
 
                 if (flagStop) {
