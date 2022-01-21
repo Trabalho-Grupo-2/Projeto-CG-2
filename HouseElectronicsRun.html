@@ -12,10 +12,27 @@
 
 
         }
+        button{
+            position: absolute;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 20px;
+            width:200px;
+            height: 50px;
+            border-radius: 10px;
+
+        }
+        .wrapper{
+            position: absolute;
+            left: 42.5%;
+            top: 45%;
+        }
     </style>
 </head>
 
 <body>
+    <div class="wrapper">
+    <button>PLAY AGAIN</button>
+    </div>
     <script type="module">
         import * as THREE from './libs/three.module.js';
         // ORBIT CONTROLS utility (enable moving camera with mouse)
@@ -884,16 +901,22 @@
 
                 scene.add(tv);
             }
+            var groundTexture = new THREE.TextureLoader().load( "textures/Stone_Path_007_basecolor" );
+            groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping;
+            groundTexture.repeat.set( 10000, 10000 );
+            groundTexture.anisotropy = 16;
+            groundTexture.encoding = THREE.sRGBEncoding;
+            
+            plain = new THREE.Object3D();
+            geometry = new THREE.BoxGeometry(150, 100000, 0);
+            let material = new THREE.MeshBasicMaterial({ color: 0xeeeeee, opacity: 1 });
+            let myPlain = new THREE.Mesh(geometry, material);
+            myPlain.position.z = -11
+            scene.add(myPlain);
+
 
             // Fridge
             function callFridge() {
-                plain = new THREE.Object3D();
-                geometry = new THREE.BoxGeometry(150, 100000, 0);
-                let material = new THREE.MeshBasicMaterial({ color: 0xeeeeee, opacity: 1 });
-                let myPlain = new THREE.Mesh(geometry, material);
-                myPlain.position.z = -11
-                scene.add(myPlain);
-
                 fridge = new THREE.Object3D();
                 fridge.position.set(0, 0, 0)
                 scene.add(fridge);
