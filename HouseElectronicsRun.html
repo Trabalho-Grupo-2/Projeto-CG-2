@@ -900,10 +900,16 @@
 
                 scene.add(tv);
             }
-            
+            let texture = new THREE.TextureLoader().load("textures/Stone_Path_007_basecolor.jpg");
+            // the texture will repeat itself 3x horizontally and 3x vertically
+            texture.wrapS = THREE.RepeatWrapping;
+            texture.wrapT = THREE.RepeatWrapping;
+            texture.repeat.set(5 , 5 );
+            // create textured material
+
             plain = new THREE.Object3D();
             geometry = new THREE.BoxGeometry(150, 100000, 0);
-            let material = new THREE.MeshBasicMaterial({ color: 0xeeeeee, opacity: 1 });
+            let material = new THREE.MeshBasicMaterial({ map: texture, opacity: 1 });
             let myPlain = new THREE.Mesh(geometry, material);
             myPlain.position.z = -11
             scene.add(myPlain);
