@@ -12,10 +12,16 @@
 
 
         }
+        button{
+            margin: auto;
+            text-align: center;
+
+        }
     </style>
 </head>
 
 <body>
+    <button>PLAY AGAIN</button>
     <script type="module">
         import * as THREE from './libs/three.module.js';
         // ORBIT CONTROLS utility (enable moving camera with mouse)
@@ -883,6 +889,12 @@
 
                 scene.add(tv);
             }
+            var groundTexture = new THREE.TextureLoader().load( "textures/Stone_Path_007_basecolor" );
+            groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping;
+            groundTexture.repeat.set( 10000, 10000 );
+            groundTexture.anisotropy = 16;
+            groundTexture.encoding = THREE.sRGBEncoding;
+            
             plain = new THREE.Object3D();
             geometry = new THREE.BoxGeometry(150, 100000, 0);
             let material = new THREE.MeshBasicMaterial({ color: 0xeeeeee, opacity: 1 });
