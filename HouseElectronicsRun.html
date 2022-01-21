@@ -13,15 +13,26 @@
 
         }
         button{
-            margin: auto;
-            text-align: center;
+            position: absolute;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 20px;
+            width:200px;
+            height: 50px;
+            border-radius: 10px;
 
+        }
+        .wrapper{
+            position: absolute;
+            left: 42.5%;
+            top: 45%;
         }
     </style>
 </head>
 
 <body>
+    <div class="wrapper">
     <button>PLAY AGAIN</button>
+    </div>
     <script type="module">
         import * as THREE from './libs/three.module.js';
         // ORBIT CONTROLS utility (enable moving camera with mouse)
