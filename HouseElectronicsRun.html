@@ -19,7 +19,10 @@
             width:200px;
             height: 50px;
             border-radius: 10px;
-
+            visibility: hidden;
+        }
+        button:hover{
+            cursor: pointer;
         }
         .wrapper{
             position: absolute;
@@ -31,7 +34,7 @@
 
 <body>
     <div class="wrapper">
-    <button>PLAY AGAIN</button>
+    <button onclick="buttonHandler()"id="myButton">PLAY AGAIN</button>
     </div>
     <script type="module">
         import * as THREE from './libs/three.module.js';
@@ -45,6 +48,8 @@
         let front, fridge, plain, fence, structure, collision, BBox2, ac = 0.00865, cilindrobotao2, cilindrobotao;
         let fridgerotac = 0.1, tvrotac = 0.1, microrortac = 0.1
         let obj_cam_mov = 0.4;
+        let myButton = document.querySelector("#myButton");
+        console.log(myButton);
         const barriers = [], barra = [];
         let tv = new THREE.Group();
         let microwave = new THREE.Group();
@@ -1219,7 +1224,11 @@
                 microwave.position.z+=1;
                 microwave.position.y+= 1;
                 microwave.rotateY(Math.PI / 2 * microrortac)
-                
+                myButton.style.visibility= "visible";
+            }
+            function buttonHandler(){
+                myButton.style.visibility= "hidden";
+                fridge.position.set(0,0,0);
             }
 
             microwave.visible = false;
