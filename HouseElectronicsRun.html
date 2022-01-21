@@ -907,16 +907,9 @@
 
                 scene.add(tv);
             }
-            let texture = new THREE.TextureLoader().load("textures/Stone_Path_007_basecolor.jpg");
-            // the texture will repeat itself 3x horizontally and 3x vertically
-            texture.wrapS = THREE.RepeatWrapping;
-            texture.wrapT = THREE.RepeatWrapping;
-            texture.repeat.set(5 , 5 );
-            // create textured material
-
             plain = new THREE.Object3D();
             geometry = new THREE.BoxGeometry(150, 100000, 0);
-            let material = new THREE.MeshBasicMaterial({ map: texture, opacity: 1 });
+            let material = new THREE.MeshBasicMaterial({ color:"#EEEEEE", opacity: 1 });
             let myPlain = new THREE.Mesh(geometry, material);
             myPlain.position.z = -11
             scene.add(myPlain);
@@ -1128,8 +1121,16 @@
             structure = new THREE.Object3D();
             scene.add(structure)
 
+            let texture = new THREE.TextureLoader().load("textures/Stone_Path_007_basecolor.jpg");
+            // the texture will repeat itself 3x horizontally and 3x vertically
+            texture.wrapS = THREE.RepeatWrapping;
+            texture.wrapT = THREE.RepeatWrapping;
+            texture.repeat.set( 2, 2);
+            // create textured material
+
+
             geometry = new THREE.BoxGeometry(35, 5, 20);
-            material = new THREE.MeshBasicMaterial({ color: 0x0000FF });
+            material = new THREE.MeshBasicMaterial({ map: texture });
 
             let BBoxsHelp = []
             for (let i = 0; i < 100; i++) {
