@@ -29,10 +29,25 @@
             left: 42.5%;
             top: 45%;
         }
+        img{
+            position: absolute;
+        }
+        .instrucoes{
+            position: absolute;
+            font-family: 'Courier New', Courier, monospace;
+            color: white;
+            font-size: 20px;
+            text-shadow: -0.5px -0.5px 0 #000, 0.5px -0.5px 0 #000, -0.5px 0.5px 0 #000, 0.5px 0.5px 0 #000;
+        }
     </style>
 </head>
 
 <body>
+    <div class="instrucoes">
+        <p>PRESS KEY UP TO JUMP</p>
+        <p>PRESS LEFT KEY TO GO LEFT</p>
+        <p>PRESS RIGHT KEY TO GO RIGHT</p>
+    </div>
     <div class="wrapper">
     <button onclick="buttonHandler()"id="myButton">PLAY AGAIN</button>
     </div>
