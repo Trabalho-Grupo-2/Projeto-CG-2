@@ -23,7 +23,7 @@
 
         let camera, scene, renderer, material, geometry, mesh;
         let flagArrowUp = false, flagArrowDown = false, flagArrowLeft = false, flagArrowRight = false;
-        let DoorClosed = true, DoorStop = false, isOnFloor = false, isUp = true;
+        let DoorClosed = true, DoorStop = false, isOnFloor = false, isUp = true, disabledLeft = false, disabledRight = false, disabledUp = false
         let microwave, tv, front, fridge, plain, fence, structure, collision, BBox2, ac = 0.01;
         let obj_cam_mov = 0.4;
         let cilindrobotao2, cilindrobotao, linecilindrobotao2, linecilindrobotao;
@@ -99,11 +99,9 @@
                         break;
                     case 'ArrowLeft':
                         flagArrowLeft = true;
-                        console.log(e.key)
                         break;
                     case 'ArrowRight':
                         flagArrowRight = true;
-                        console.log(e.key)
                         break;
                     case '1':
                         changeCharacter(e.key)
@@ -985,6 +983,7 @@
                         if(fridge.position.z >= 36 || microwave.position.z >= 36 || tv.position.z >= 36) {
                             flagArrowUp = false;
                             flagArrowDown = true;
+                            disabledUp = true;
                         }
                         break;
                 
@@ -996,30 +995,27 @@
                         fridge.position.z -= 0.5
                         microwave.position.z -= 0.5
                         tv.position.z -= 0.5
-                        
-                        if(fridge.position.z <= 12 || microwave.position.z <= 12 || tv.position.z <= 12) {
+                        if(fridge.position.z <= 12 || microwave.position.z <= 8 || tv.position.z <= 8) {
                             flagArrowDown = false;
+                            disabledUp = false;
                         }
                         break;
 
                     case 3:
                         flagArrowDown = false;
-                        flagArrowUp = false;
                         flagArrowRight = false;
-                        
-                        console.log(fridge.position.x)
-                        console.log(microwave.position.x)
-                        console.log(tv.position.x)
+                        disabledRight = false;
+                        disabledLeft = false;
 
                         fridge.position.x -= 0.6
                         microwave.position.x -= 0.6
                         tv.position.x -= 0.6
-                        
-                        console.log(fridge.position.x)
-                        console.log(microwave.position.x)
-                        console.log(tv.position.x)
+                        if((fridge.position.x >= -0.1 && fridge.position.x <= 0.1)||(microwave.position.x >= -0.1 && microwave.position.x <= 0.1)|| (tv.position.x >= -0.1 && tv.position.x <= 0.1)){
+                            flagArrowLeft = false;
+                        }
                         
                         if(fridge.position.x <= -35 || microwave.position.x <= -35 || tv.position.x <= -35) {
+                            disabledLeft = true;
                             flagArrowLeft = false;
                         }
                         break;
@@ -1028,21 +1024,18 @@
                         flagArrowDown = false;
                         flagArrowUp = false;
                         flagArrowLeft = false;
-                        
-                        console.log(fridge.position.x)
-                        console.log(microwave.position.x)
-                        console.log(tv.position.x)
+                        disabledLeft = false;
 
                         fridge.position.x += 0.6
                         microwave.position.x += 0.6
                         tv.position.x += 0.6
                         
-                        console.log(fridge.position.x)
-                        console.log(microwave.position.x)
-                        console.log(tv.position.x)
-                        
+                        if((fridge.position.x >= -0.1 && fridge.position.x <= 0.1)||(microwave.position.x >= -0.1 && microwave.position.x <= 0.1)|| (tv.position.x >= -0.1 && tv.position.x <= 0.1)){
+                            flagArrowRight = false;
+                        }
                         if(fridge.position.x >= +35 || microwave.position.x >= +35 || tv.position.x >= +35) {
                             flagArrowRight = false;
+                            disabledRight = true;
                         }
                         break;
                     }
@@ -1140,7 +1133,7 @@
             scene.add(structure)
 
             geometry = new THREE.BoxGeometry(20, 5, 20);
-            material = new THREE.MeshBasicMaterial({ color: 0x00FF00 });
+            material = new THREE.MeshBasicMaterial({ color: 0x0000FF });
 
             let BBoxsHelp = []
             for (let i = 0; i < 100; i++) {
@@ -1156,12 +1149,16 @@
 
               
                 let BBox = new THREE.Box3().setFromObject(fridge);
+                let BBox2 = new THREE.Box3().setFromObject(microwave);
+                let BBox3 = new THREE.Box3().setFromObject(tv);
 
                 for (let i = 0; i < barriers.length; i++) {
 
-                    let BBox2 = new THREE.Box3().setFromObject(barriers[i]);
-                    let colision = BBox.intersectsBox(BBox2)
-                    if (colision) {
+                    let BBox0 = new THREE.Box3().setFromObject(barriers[i]);
+                    let colision1 = BBox.intersectsBox(BBox0)
+                    let colision2 = BBox2.intersectsBox(BBox0)
+                    let colision3 = BBox3.intersectsBox(BBox0)
+                    if (colision1 || colision2 || colision3) {
                         flagArrowDown = true;
                     }
                 };
@@ -1176,10 +1173,10 @@
             tv.visible = false;
             
             microwave.scale.set(9,9,9)
-            microwave.position.z = 12
+            microwave.position.z = 8
             
             tv.scale.set(5,5,5)
-            tv.position.z = 12
+            tv.position.z = 8
             
             fridge.scale.set(1.5,1.5,1.5)
             fridge.position.z = 12
@@ -1189,19 +1186,20 @@
             function render() {
 
 
-                if (flagArrowUp) {
+                if (flagArrowUp && disabledUp == false) {
                     moveObject(1);
                 }
                 if (flagArrowDown) {
                     moveObject(2)
+                    
                     // closeDoor();
                     // fridge.position.z += 0.1;
                     // obj_cam_mov = 0;
                 }
-                if (flagArrowLeft) {
+                if (flagArrowLeft & disabledLeft == false) {
                     moveObject(3);
                 }
-                if (flagArrowRight) {
+                if (flagArrowRight & disabledRight== false) {
                     moveObject(4);
                 }
                 //camera.position.y -= obj_cam_mov;
