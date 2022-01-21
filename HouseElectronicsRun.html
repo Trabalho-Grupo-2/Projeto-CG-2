@@ -1025,6 +1025,25 @@
                         break;
 
                     case 4:
+                        flagArrowDown = false;
+                        flagArrowUp = false;
+                        flagArrowLeft = false;
+                        
+                        console.log(fridge.position.x)
+                        console.log(microwave.position.x)
+                        console.log(tv.position.x)
+
+                        fridge.position.x += 0.6
+                        microwave.position.x += 0.6
+                        tv.position.x += 0.6
+                        
+                        console.log(fridge.position.x)
+                        console.log(microwave.position.x)
+                        console.log(tv.position.x)
+                        
+                        if(fridge.position.x >= +35 || microwave.position.x >= +35 || tv.position.x >= +35) {
+                            flagArrowRight = false;
+                        }
                         break;
                     }
                     
