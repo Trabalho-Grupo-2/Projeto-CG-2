@@ -34,7 +34,7 @@
 
 <body>
     <div class="wrapper">
-    <button onclick="buttonHandler()"id="myButton">PLAY AGAIN</button>
+    <button id="myButton">PLAY AGAIN</button>
     </div>
     <script type="module">
         import * as THREE from './libs/three.module.js';
@@ -55,6 +55,7 @@
 
         window.onload = function init() {
 
+            
             scene = new THREE.Scene();
 
             const aspect = window.innerWidth / window.innerHeight;
@@ -1228,10 +1229,7 @@
                 myButton.style.visibility= "visible";
             }
             function buttonHandler(){
-                myButton.style.visibility= "hidden";
-                fridge.position.set(0,0,0);
-                tv.position.set(0,0,8);
-                microwave.position.set(0,0,12);
+                location.reload();
             }
 
             microwave.visible = false;
@@ -1246,7 +1244,9 @@
             fridge.scale.set(1.5, 1.5, 1.5)
             fridge.position.z = 12
 
-            
+            myButton.addEventListener("click",function(){
+                buttonHandler();
+            });
 
             renderer.setAnimationLoop(render);
 
