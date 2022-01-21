@@ -22,13 +22,13 @@
         import { OrbitControls } from './libs/OrbitControls.js';
 
         let camera, scene, renderer, material, geometry, mesh;
-        let flagArrowUp = false, flagArrowDown = false, flagArrowLeft = false, flagArrowRight = false;
-        let DoorClosed = true, DoorStop = false, isOnFloor = false, isUp = true, disabledLeft = false, disabledRight = false, disabledUp = false
-        let microwave, tv, front, fridge, plain, fence, structure, collision, BBox2, ac = 0.01;
+        let flagArrowUp = false, flagArrowDown = false, flagArrowLeft = false, flagArrowRight = false, flagMoving = false;
+        let DoorClosed = true, DoorStop = false, isOnFloor = false, isUp = true, flagStop = false;
+        let front, fridge, plain, fence, structure, collision, BBox2, ac = 0.02, cilindrobotao2, cilindrobotao;
         let obj_cam_mov = 0.4;
-        let cilindrobotao2, cilindrobotao, linecilindrobotao2, linecilindrobotao;
-
-        const barriers = [];
+        const barriers = [], barra = [];
+        let tv = new THREE.Group();
+        let microwave = new THREE.Group();
 
         window.onload = function init() {
            
@@ -117,7 +117,7 @@
 
             // Microwave
             function callMicrowave() {
-            microwave = new THREE.Group();
+           
 
             // White Wall 01
             const whiteWall01 = new THREE.Mesh(
@@ -584,14 +584,14 @@
                         
             // TV
             function callTv() {
-            tv = new THREE.Group();
-            front= new THREE.Mesh(
+
+                const frontTv= new THREE.Mesh(
                 new THREE.BoxGeometry( 5, 3, 2), 
                 new THREE.MeshBasicMaterial({color: "#7C756F"}));
 
-                front.position.z = 2;
+                frontTv.position.z = 2;
 
-            tv.add(front);
+            tv.add(frontTv);
 
             const whiteBox = new THREE.Mesh(
                 new THREE.CylinderGeometry( 1.3, 2, 2, 4 ), 
@@ -663,6 +663,24 @@
 
 
             tv.add(foraEcra);
+            const caixabotao = new THREE.Mesh(
+                new THREE.BoxGeometry(0.8,2.5,0.01),
+                new THREE.MeshBasicMaterial({color:"#DDDDDD"})
+            );
+            caixabotao.position.z = 3;
+            caixabotao.position.x = 1.78;
+
+
+            tv.add(caixabotao);
+            const caixabotao2 = new THREE.Mesh(
+                new THREE.BoxGeometry(0.75,2.45,0.01),
+                new THREE.MeshBasicMaterial({color:"#7C756F"})
+            );
+            caixabotao2.position.z = 3.01;
+            caixabotao2.position.x = 1.78;
+
+
+            tv.add(caixabotao2);
 
             const antena1= new THREE.Mesh(
                 new THREE.CylinderGeometry(0.01,0.01,2.5,32),
@@ -710,7 +728,7 @@
                 new THREE.CylinderGeometry(0.25,0.25,0.5,32),
                 new THREE.MeshBasicMaterial({color:"#928A7A"}));
 
-                botao.position.z = 2.9;
+                botao.position.z = 2.95;
                 botao.position.y = 0.75;
                 botao.position.x = 1.75;
                 botao.rotation.x = -Math.PI*(1/2);
@@ -721,7 +739,7 @@
                 new THREE.CylinderGeometry(0.25,0.25,0.5,32),
                 new THREE.MeshBasicMaterial({color:"#928A7A"}));
 
-                botao2.position.z = 2.9;
+                botao2.position.z = 2.95;
                 botao2.position.x = 1.75;
                 botao2.position.y = 0.1
                 botao2.rotation.x = -Math.PI*(1/2);
@@ -732,7 +750,7 @@
                 new THREE.CylinderGeometry(0.1,0.1,0.5,32),
                 new THREE.MeshBasicMaterial({color:"#000000"}));
 
-                dentrobotao.position.z = 2.925;
+                dentrobotao.position.z = 3;
                 dentrobotao.position.y = 0.75;
                 dentrobotao.position.x = 1.75;
                 dentrobotao.rotation.x = -Math.PI*(1/2);
@@ -743,7 +761,7 @@
                 new THREE.CylinderGeometry(0.1,0.1,0.5,32),
                 new THREE.MeshBasicMaterial({color:"#000000"}));
 
-                dentrobotao2.position.z = 2.925;
+                dentrobotao2.position.z = 3;
                 dentrobotao2.position.x = 1.75;
                 dentrobotao2.position.y = 0.1
                 dentrobotao2.rotation.x = -Math.PI*(1/2);
@@ -752,51 +770,31 @@
 
             cilindrobotao= new THREE.Mesh(
                 new THREE.CylinderGeometry(0.05,0.05,0.4,32),
-                new THREE.MeshBasicMaterial({color:"#928A7A"}));
+                new THREE.MeshBasicMaterial({color:"#DDDDDD"}));
 
-                cilindrobotao.position.z = 3.2;
+                cilindrobotao.position.z = 3.25;
                 cilindrobotao.position.y= 0.75;
                 cilindrobotao.position.x = 1.75;
                 cilindrobotao.rotation.z = -Math.PI*(1/4);
 
             tv.add(cilindrobotao);
-            linecilindrobotao= new THREE.LineSegments(
-                new THREE.EdgesGeometry(new THREE.CylinderGeometry(0.05,0.05,0.4,4)),
-                new THREE.LineBasicMaterial({color:"#000000"}));
-
-                linecilindrobotao.position.z = 3.2;
-                linecilindrobotao.position.y= 0.75;
-                linecilindrobotao.position.x = 1.75;
-                linecilindrobotao.rotation.z = -Math.PI*(1/4);
-
-            tv.add(linecilindrobotao);
             cilindrobotao2= new THREE.Mesh(
                 new THREE.CylinderGeometry(0.05,0.05,0.4,32),
-                new THREE.MeshBasicMaterial({color:"#928A7A"}));
+                new THREE.MeshBasicMaterial({color:"#DDDDDD"}));
 
-                cilindrobotao2.position.z = 3.2;
+                cilindrobotao2.position.z = 3.25;
                 cilindrobotao2.position.y= 0.1;
                 cilindrobotao2.position.x = 1.75;
                 cilindrobotao2.rotation.z = -Math.PI*(1/2);
 
             tv.add(cilindrobotao2);
-            linecilindrobotao2= new THREE.LineSegments(
-                new THREE.EdgesGeometry(new THREE.CylinderGeometry(0.05,0.05,0.4,4)),
-                new THREE.LineBasicMaterial({color:"#000000"}));
-
-                linecilindrobotao2.position.z = 3.2;
-                linecilindrobotao2.position.y= 0.1;
-                linecilindrobotao2.position.x = 1.75;
-                linecilindrobotao2.rotation.z = -Math.PI*(1/2);
-
-            tv.add(linecilindrobotao2);
 
 
             const baixoBotao= new THREE.Mesh(
                 new THREE.BoxGeometry( 0.5, 0.08, 0.01), 
                 new THREE.MeshBasicMaterial({color: "#000000"}));
 
-                baixoBotao.position.z = 3;
+                baixoBotao.position.z = 3.02;
                 baixoBotao.position.x = 1.775;
                 baixoBotao.position.y = -0.5;
 
@@ -806,7 +804,7 @@
                 new THREE.BoxGeometry( 0.5, 0.07, 0.01), 
                 new THREE.MeshBasicMaterial({color: "#000000"}));
 
-                baixoBotao2.position.z = 3;
+                baixoBotao2.position.z = 3.02;
                 baixoBotao2.position.x = 1.775;
                 baixoBotao2.position.y = -0.5;
 
@@ -815,7 +813,7 @@
                 new THREE.BoxGeometry( 0.5, 0.07, 0.01), 
                 new THREE.MeshBasicMaterial({color: "#000000"}));
 
-                baixoBotao3.position.z = 3;
+                baixoBotao3.position.z = 3.02;
                 baixoBotao3.position.x = 1.775;
                 baixoBotao3.position.y = -0.6;
 
@@ -824,7 +822,7 @@
                 new THREE.BoxGeometry( 0.5, 0.07, 0.01), 
                 new THREE.MeshBasicMaterial({color: "#000000"}));
 
-                baixoBotao4.position.z = 3;
+                baixoBotao4.position.z = 3.02;
                 baixoBotao4.position.x = 1.775;
                 baixoBotao4.position.y = -0.7;
 
@@ -833,7 +831,7 @@
                 new THREE.BoxGeometry( 0.5, 0.07, 0.01), 
                 new THREE.MeshBasicMaterial({color: "#000000"}));
 
-                baixoBotao5.position.z = 3;
+                baixoBotao5.position.z = 3.02;
                 baixoBotao5.position.x = 1.775;
                 baixoBotao5.position.y = -0.8;
 
@@ -842,7 +840,7 @@
                 new THREE.BoxGeometry( 0.5, 0.07, 0.01), 
                 new THREE.MeshBasicMaterial({color: "#000000"}));
 
-                baixoBotao6.position.z = 3;
+                baixoBotao6.position.z = 3.02;
                 baixoBotao6.position.x = 1.775;
                 baixoBotao6.position.y = -0.9;
 
@@ -851,7 +849,7 @@
                 new THREE.BoxGeometry( 0.5, 0.07, 0.01), 
                 new THREE.MeshBasicMaterial({color: "#000000"}));
 
-                baixoBotao7.position.z = 3;
+                baixoBotao7.position.z = 3.02;
                 baixoBotao7.position.x = 1.775;
                 baixoBotao7.position.y = -1;
 
@@ -860,18 +858,29 @@
                 new THREE.BoxGeometry( 0.5, 0.07, 0.01), 
                 new THREE.MeshBasicMaterial({color: "#000000"}));
 
-                baixoBotao8.position.z = 3;
+                baixoBotao8.position.z = 3.02;
                 baixoBotao8.position.x = 1.775;
                 baixoBotao8.position.y = -1.1;
 
             tv.add(baixoBotao8);
 
-            let axes = new THREE.AxesHelper(4);
-            scene.add(axes);
+            for (let i = 0; i < 3; i++){
+                    barra.push(new THREE.Mesh(
+                        new THREE.BoxGeometry(0.5,2,0.01),
+                        new THREE.MeshBasicMaterial({color:"#ddf"})));
+
+                    barra[i].position.z=3.06;
+                    barra[i].position.x= -1.75 + i;
+
+                    tv.add(barra[i]);
+
+            }
+
+            stopObject()
 
             tv.rotation.x = Math.PI/2
 
-            scene.add(tv);    
+            scene.add(tv);
             }
             
             // Fridge
@@ -972,9 +981,11 @@
 
                 switch (option) {
                     case 1:
+
                         flagArrowDown = false;
                         flagArrowLeft = false;
                         flagArrowRight = false;
+                        flagStop = false;
 
                         fridge.position.z += 0.5
                         microwave.position.z += 0.5
@@ -991,19 +1002,25 @@
                         flagArrowUp = false;
                         flagArrowLeft = false;
                         flagArrowRight = false;
+                        flagStop = false;
                     
                         fridge.position.z -= 0.5
                         microwave.position.z -= 0.5
                         tv.position.z -= 0.5
+                        
                         if(fridge.position.z <= 12 || microwave.position.z <= 8 || tv.position.z <= 8) {
                             flagArrowDown = false;
+                            flagStop = true;
                             disabledUp = false;
                         }
+                    
                         break;
 
                     case 3:
                         flagArrowDown = false;
                         flagArrowRight = false;
+                        flagStop = false;
+                    
                         disabledRight = false;
                         disabledLeft = false;
 
@@ -1017,6 +1034,7 @@
                         if(fridge.position.x <= -35 || microwave.position.x <= -35 || tv.position.x <= -35) {
                             disabledLeft = true;
                             flagArrowLeft = false;
+                            flagStop = true;
                         }
                         break;
 
@@ -1024,6 +1042,8 @@
                         flagArrowDown = false;
                         flagArrowUp = false;
                         flagArrowLeft = false;
+                        flagStop = false;
+
                         disabledLeft = false;
 
                         fridge.position.x += 0.6
@@ -1032,71 +1052,15 @@
                         
                         if((fridge.position.x >= -0.1 && fridge.position.x <= 0.1)||(microwave.position.x >= -0.1 && microwave.position.x <= 0.1)|| (tv.position.x >= -0.1 && tv.position.x <= 0.1)){
                             flagArrowRight = false;
+                            flagStop = true;
                         }
                         if(fridge.position.x >= +35 || microwave.position.x >= +35 || tv.position.x >= +35) {
                             flagArrowRight = false;
+                            flagStop = true;
                             disabledRight = true;
                         }
                         break;
                     }
-                    
-
-                    // if (DoorClosed && !DoorStop) {
-                    //     fridge.position.z += 0.5
-                    //     front.rotateZ(Math.PI / 2 * ac);
-                    // }
-                    // else if (!DoorClosed && !DoorStop) {
-                    //     fridge.position.z -= 0.5
-                    //     front.rotateZ(-Math.PI / 2 * ac)
-                    // }
-                    // if (front.rotation.z >= Math.PI / 2) {
-                    //     DoorClosed = false
-                    // }
-                    // if (front.rotation.z <= 0 && !DoorStop) {
-                    //     DoorClosed = true;
-                    //     DoorStop = false;
-                    //     flagArrowUp = false;
-                    // }
-            
-                    
-                    // if (DoorClosed && !DoorStop) {
-                    //     if (fridge.position.x > -20) {
-                    //         fridge.position.x -= 0.2
-                    //         front.rotateZ(Math.PI / 2 * ac);
-                    //     }
-                    // }
-                    // else if (!DoorClosed && !DoorStop) {
-                    //     front.rotateZ(-Math.PI / 2 * ac)
-                    // }
-                    // if (front.rotation.z >= Math.PI / 2) {
-                    //     DoorClosed = false
-                    // }
-                    // if (front.rotation.z <= 0 && !DoorStop) {
-                    //     DoorClosed = true;
-                    //     DoorStop = false;
-                    //     flagArrowLeft = false;
-                    // }
-
-
-                    // flagArrowLeft = false;
-                    // flagArrowUp = false;
-                    // if (DoorClosed && !DoorStop) {
-                    //     if (fridge.position.x < 20) {
-                    //         fridge.position.x += 0.2
-                    //         front.rotateZ(Math.PI / 2 * ac);
-                    //     }
-                    // }
-                    // else if (!DoorClosed && !DoorStop) {
-                    //     front.rotateZ(-Math.PI / 2 * ac)
-                    // }
-                    // if (front.rotation.z >= Math.PI / 2) {
-                    //     DoorClosed = false
-                    // }
-                    // if (front.rotation.z <= 0 && !DoorStop) {
-                    //     DoorClosed = true;
-                    //     DoorStop = false;
-                    //     flagArrowRight = false;
-                    // }
             }
 
             function closeDoor() {
@@ -1164,6 +1128,53 @@
                 };
             }
 
+            function animateObject() {
+
+                // TV Animation
+                cilindrobotao.rotation.z+=0.01;
+                cilindrobotao2.rotation.z+=0.01;
+
+                for (let i = 0; i < 3; i++) {
+                    barra[i].visible = true;
+
+                    if (barra[i].position.x >= 0.655) {
+                        barra[i].position.x = -1.75
+                    }
+                    else {
+                        barra[i].position.x += 0.5
+                    }
+                }
+
+                //Microwave Animation
+                microwave.children[14].rotation.y += 0.01
+                microwave.children[13].visible = false
+
+                //Fridge Animation
+                if (DoorClosed && !DoorStop) {
+                    front.rotateZ(Math.PI / 2 * ac);
+                    console.log((Math.PI / 2 * ac))
+                }
+                else if (!DoorClosed && !DoorStop) {
+                    front.rotateZ(-Math.PI / 2 * ac)
+                    console.log((-Math.PI / 2 * ac))
+                }
+                    if (front.rotation.z >= Math.PI / 2) {
+                        DoorClosed = false
+                    }
+                    if (front.rotation.z <= 0 && !DoorStop) {
+                    DoorClosed = true;
+                    DoorStop = false;
+                }
+            }
+
+            function stopObject() {
+                for (let i = 0; i < 3; i++) {
+                    barra[i].visible = false;
+                }
+
+                microwave.children[13].visible = true
+            }
+
             callMicrowave()
             callTv()
             callFridge()
@@ -1185,28 +1196,31 @@
             
             function render() {
 
-
                 if (flagArrowUp && disabledUp == false) {
                     moveObject(1);
+                    animateObject();
                 }
                 if (flagArrowDown) {
                     moveObject(2)
-                    
-                    // closeDoor();
-                    // fridge.position.z += 0.1;
-                    // obj_cam_mov = 0;
+                    animateObject();
                 }
                 if (flagArrowLeft & disabledLeft == false) {
                     moveObject(3);
+                    animateObject();
                 }
                 if (flagArrowRight & disabledRight== false) {
                     moveObject(4);
+                    animateObject();
                 }
                 //camera.position.y -= obj_cam_mov;
                 //fridge.position.y -= obj_cam_mov;
                 //microwave.position.y -= obj_cam_mov;
                 //tv.position.y -= obj_cam_mov;
                 checkCollision();
+
+                if (flagStop) {
+                    stopObject();
+                }
 
                 renderer.render(scene, camera);
             }
