@@ -883,16 +883,16 @@
 
                 scene.add(tv);
             }
+            plain = new THREE.Object3D();
+            geometry = new THREE.BoxGeometry(150, 100000, 0);
+            let material = new THREE.MeshBasicMaterial({ color: 0xeeeeee, opacity: 1 });
+            let myPlain = new THREE.Mesh(geometry, material);
+            myPlain.position.z = -11
+            scene.add(myPlain);
+
 
             // Fridge
             function callFridge() {
-                plain = new THREE.Object3D();
-                geometry = new THREE.BoxGeometry(150, 100000, 0);
-                let material = new THREE.MeshBasicMaterial({ color: 0xeeeeee, opacity: 1 });
-                let myPlain = new THREE.Mesh(geometry, material);
-                myPlain.position.z = -11
-                scene.add(myPlain);
-
                 fridge = new THREE.Object3D();
                 fridge.position.set(0, 0, 0)
                 scene.add(fridge);
