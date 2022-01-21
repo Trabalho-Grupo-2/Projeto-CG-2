@@ -49,7 +49,7 @@
         <p>PRESS RIGHT KEY TO GO RIGHT</p>
     </div>
     <div class="wrapper">
-    <button onclick="buttonHandler()"id="myButton">PLAY AGAIN</button>
+    <button id="myButton">PLAY AGAIN</button>
     </div>
     <script type="module">
         import * as THREE from './libs/three.module.js';
@@ -64,13 +64,13 @@
         let fridgerotac = 0.1, tvrotac = 0.1, microrortac = 0.1
         let obj_cam_mov = 0.4;
         let myButton = document.querySelector("#myButton");
-        console.log(myButton);
         const barriers = [], barra = [];
         let tv = new THREE.Group();
         let microwave = new THREE.Group();
 
         window.onload = function init() {
 
+            
             scene = new THREE.Scene();
 
             const aspect = window.innerWidth / window.innerHeight;
@@ -83,6 +83,8 @@
             renderer.setClearColor(0xadd8e6);
 
             document.body.appendChild(renderer.domElement);
+
+            
 
             const controls = new OrbitControls(camera, renderer.domElement);
 
@@ -1242,12 +1244,11 @@
                 myButton.style.visibility= "visible";
             }
             function buttonHandler(){
-                myButton.style.visibility= "hidden";
-                fridge.position.set(0,0,0);
+                location.reload();
             }
 
             microwave.visible = false;
-            fridge.visible = false;
+            fridge.visible = true;
             tv.visible = false;
             microwave.scale.set(9, 9, 9)
             microwave.position.z = 8
@@ -1257,6 +1258,10 @@
 
             fridge.scale.set(1.5, 1.5, 1.5)
             fridge.position.z = 12
+
+            myButton.addEventListener("click",function(){
+                buttonHandler();
+            });
 
             renderer.setAnimationLoop(render);
 
